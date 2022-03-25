@@ -4,17 +4,18 @@ on:
   pull_request:
   push:
 jobs:
-  helm_test:
+  rafal-test1:
     runs-on: ubuntu-latest
     env:
         HOSTED_ZONE: dev.envalfresco.com
         AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
+        HELM_REPO_BASE_URL: https://kubernetes-charts.alfresco.com
+        HELM_REPO: incubator
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-      #- uses: Alfresco/alfresco-build-tools/.github/actions/setup-aws-cli@OPSEXP-1221-aws
       - uses: unfor19/install-aws-cli-action@v1
         with:
           version: 2.4.25
@@ -30,13 +31,12 @@ jobs:
             mkdir -p $HOME/.kube && rancher cluster kubeconfig acs-cluster > $HOME/.kube/config
       - uses: azure/setup-kubectl@v2.0
         id: install
-      #- uses: Alfresco/alfresco-build-tools/.github/actions/setup-kubectl@OPSEXP-1221-kubectl
       - name: Dummy step
         run: |
             kubectl get pods -A
-            docker
+            docker -v
             docker-compose --version
-            helm
+            helm version
       - name: try to run script
-        run: .github/workflows/test.sh
+        run: .github/workflows/test.sh ${{ github.event.head_commit.message }}
         shell: bash
