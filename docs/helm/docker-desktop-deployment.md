@@ -36,22 +36,15 @@ kubectl create namespace alfresco
 
 ### Ingress
 
-Add the chart repository using the following command:
+Deploy an ingress controller into the `alfresco` namespace using the command below:
 
 ```bash
-helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
-helm repo update
-```
-
-Deploy an ingress controller into the alfresco namespace using the command below:
-
-```bash
-helm install acs-ingress ingress-nginx/ingress-nginx --version=3.7.1 \
---set controller.scope.enabled=true \
---set controller.scope.namespace=alfresco \
---set rbac.create=true \
---atomic \
---namespace alfresco
+helm upgrade --install acs-ingress --repo https://kubernetes.github.io/ingress-nginx ingress-nginx
+  --set controller.scope.enabled=true \
+  --set controller.scope.namespace=alfresco \
+  --set rbac.create=true \
+  --atomic \
+  --namespace alfresco
 ```
 
 > NOTE: The command will wait until the deployment is ready so please be patient.

@@ -240,24 +240,21 @@ kubectl create namespace alfresco
 3. Deploy the ingress using the following commands (replacing `ACM_CERTIFICATE_ARN` and `YOUR-DOMAIN-NAME` with the ARN of the certificate and hosted zone created earlier in the DNS section):
 
     ```bash
-    helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
-    helm repo update
-
-    helm install acs-ingress ingress-nginx/ingress-nginx --version=3.7.1 \
-    --set controller.scope.enabled=true \
-    --set controller.scope.namespace=alfresco \
-    --set rbac.create=true \
-    --set controller.config."proxy-body-size"="100m" \
-    --set controller.service.targetPorts.https=80 \
-    --set controller.service.annotations."service\.beta\.kubernetes\.io/aws-load-balancer-backend-protocol"="http" \
-    --set controller.service.annotations."service\.beta\.kubernetes\.io/aws-load-balancer-ssl-ports"="https" \
-    --set controller.service.annotations."service\.beta\.kubernetes\.io/aws-load-balancer-ssl-cert"="ACM_CERTIFICATE_ARN" \
-    --set controller.service.annotations."external-dns\.alpha\.kubernetes\.io/hostname"="acs.YOUR-DOMAIN-NAME" \
-    --set controller.service.annotations."service\.beta\.kubernetes\.io/aws-load-balancer-ssl-negotiation-policy"="ELBSecurityPolicy-TLS-1-2-2017-01" \
-    --set controller.publishService.enabled=true \
-    --set controller.admissionWebhooks.enabled=false \
-    --atomic \
-    --namespace alfresco
+    helm upgrade --install acs-ingress --repo https://kubernetes.github.io/ingress-nginx ingress-nginx
+      --set controller.scope.enabled=true \
+      --set controller.scope.namespace=alfresco \
+      --set rbac.create=true \
+      --set controller.config."proxy-body-size"="100m" \
+      --set controller.service.targetPorts.https=80 \
+      --set controller.service.annotations."service\.beta\.kubernetes\.io/aws-load-balancer-backend-protocol"="http" \
+      --set controller.service.annotations."service\.beta\.kubernetes\.io/aws-load-balancer-ssl-ports"="https" \
+      --set controller.service.annotations."service\.beta\.kubernetes\.io/aws-load-balancer-ssl-cert"="ACM_CERTIFICATE_ARN" \
+      --set controller.service.annotations."external-dns\.alpha\.kubernetes\.io/hostname"="acs.YOUR-DOMAIN-NAME" \
+      --set controller.service.annotations."service\.beta\.kubernetes\.io/aws-load-balancer-ssl-negotiation-policy"="ELBSecurityPolicy-TLS-1-2-2017-01" \
+      --set controller.publishService.enabled=true \
+      --set controller.admissionWebhooks.enabled=false \
+      --atomic \
+      --namespace alfresco
     ```
 
     > NOTE: The command will wait until the deployment is ready so please be patient.
